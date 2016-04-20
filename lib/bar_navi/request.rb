@@ -12,7 +12,10 @@ module BarNavi
       @call_url = call_url
       @connection = nil
     end
-    def get
+    def get preference=nil
+
+      raise "preference is required" if preference.nil?
+
       pattern = "0"
       pref = "22"
       url = "#{BASE_URL}?key=#{@api_key}&pattern=#{pattern}&pref=#{pref}&url=#{@call_url}&address=ぬい屋ビル"
