@@ -1,5 +1,7 @@
 # BarNavi
 
+BarNavi APIのRubyによるラッパー
+
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/bar_navi`. To experiment with that code, run `bin/console` for an interactive prompt.
 
 TODO: Delete this and the text above, and describe your gem
@@ -45,3 +47,14 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+
+
+## API Reference for BarNavi
+
+http://webapi.suntory.co.jp/barnavidocs/logo.html
+
+## Powered By
+
+![http://webapi.suntory.co.jp/barnavidocs](http://webapi.suntory.co.jp/barnavidocs/banner/barnavi_165_40_1.gif)
+
+画像提供：BAR-NAVI by SUNTORY
