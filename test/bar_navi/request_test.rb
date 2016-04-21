@@ -21,7 +21,7 @@ class BarNaviTest < Minitest::Test
 
   # 検索結果のテスト
   def test_response
-    response = @barnavi.get(preference: 22, address: "ぬい屋ビル")
+    response = @barnavi.get(preference: 22, logger: true, address: "ぬい屋ビル")
     assert_equal "オルガ", response["shops"]["shop"]["name_kana"]
   end
 

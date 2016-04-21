@@ -6,7 +6,8 @@ require "uri"
 require "bar_navi/errors"
 
 module BarNavi
-  BASE_URL = "http://webapi.suntory.co.jp/barnavi/v2/shops"
+  BASE_URL = "http://webapi.suntory.co.jp"
+
 
   class Request
     def initialize api_key, call_url
@@ -14,15 +15,14 @@ module BarNavi
       @call_url = call_url
       @connection = nil
     end
-    
-    def get preference:nil, pattern:0, logger: false, latitude: nil, longitude: nil, address: nil
-      raise Errors::PreferenceNotFound if preference.nil?
 
-      options = search_condition(pattern, latitude, longitude, address)
-      url = "#{BASE_URL}?key=#{@api_key}&url=#{@call_url}&pattern=#{pattern}&pref=#{preference}#{options}"
+    def get preference:nil, pattern:0, logger: false, latitude: nil, longitude: nil, address: nil
+
+      condition_hash = search_condition(preference, pattern, latitude, longitude, address)
+      url = BASE_URL
       url = URI.encode(url)
 
-      response = connection(url, logger).get
+      response = connection(url, logger).get("/barnavi/v2/shops", condition_hash)
       hash = response.body
       raise Errors::APIError.new(hash["error"]) if hash.has_key? "error"
 
@@ -39,20 +39,27 @@ module BarNavi
       end
     end
 
-    def search_condition pattern, latitude, longitude, address
-      conditions = []
+    def search_condition preference, pattern, latitude, longitude, address
+      raise Errors::PreferenceNotFound if preference.nil?
+
+      base_hash = {
+        key: @api_key,
+        url: @call_url,
+        pref: preference,
+        pattern: pattern
+      }
 
       if pattern == 1
         raise Errors::LatitudeLongitudeNotFound unless latitude.present?
         raise Errors::LatitudeLongitudeNotFound unless longitude.present?
 
-        conditions << "lat=#{latitude}" if latitude.present?
-        conditions << "lng=#{longitude}" if longitude.present?
+        base_hash[:lat] = latitude
+        base_hash[:lng] = longitude
       else
-        conditions << "address=#{address}" if address.present?
+        base_hash[:address] = address
       end
 
-      "&" + conditions.join("&") if conditions.length > 0
+      base_hash
     end
   end
 end
