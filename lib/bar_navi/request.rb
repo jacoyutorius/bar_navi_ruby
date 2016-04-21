@@ -19,10 +19,7 @@ module BarNavi
     def get preference:nil, pattern:0, logger: false, latitude: nil, longitude: nil, address: nil
 
       condition_hash = search_condition(preference, pattern, latitude, longitude, address)
-      url = BASE_URL
-      url = URI.encode(url)
-
-      response = connection(url, logger).get("/barnavi/v2/shops", condition_hash)
+      response = connection(BASE_URL, logger).get("/barnavi/v2/shops", condition_hash)
       hash = response.body
       raise Errors::APIError.new(hash["error"]) if hash.has_key? "error"
 
