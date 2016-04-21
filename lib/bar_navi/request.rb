@@ -1,4 +1,5 @@
 require "faraday"
+require "faraday_middleware"
 require 'active_support'
 require 'active_support/core_ext'
 require "uri"
@@ -12,19 +13,17 @@ module BarNavi
       @call_url = call_url
       @connection = nil
     end
-    def get preference=nil
-
+    def get preference:nil, pattern:0, &args
       raise "preference is required" if preference.nil?
 
-      pattern = "0"
-      pref = "22"
-      url = "#{BASE_URL}?key=#{@api_key}&pattern=#{pattern}&pref=#{pref}&url=#{@call_url}&address=ぬい屋ビル"
+p args
+      url = "#{BASE_URL}?key=#{@api_key}&pattern=#{pattern}&pref=#{preference}&url=#{@call_url}&address=ぬい屋ビル"
       url = URI.encode(url)
 
       response = connection(url).get
-      body = response.body
-      hash = Hash.from_xml(body.force_encoding("UTF-8"))
+      hash = response.body
       raise hash["error"] if hash.has_key? "error"
+
       hash
     end
 
@@ -32,7 +31,8 @@ module BarNavi
     def connection url
       @connection ||= Faraday.new(url: url) do |faraday|
         faraday.request :url_encoded
-        faraday.response :logger
+        # faraday.response :logger
+        faraday.response :xml,  :content_type => /\bxml$/
         faraday.adapter Faraday.default_adapter
       end
     end
